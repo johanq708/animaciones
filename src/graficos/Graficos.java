@@ -7,12 +7,14 @@ package graficos;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -29,79 +31,67 @@ public class Graficos extends JFrame{
     public static void main(String[] args) {
         Graficos frame = new Graficos();
         frame.setTitle("hola mundo");
-        frame.setSize(500, 500);
+        frame.setSize(1024, 512);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }
     
 }
-class nuevoPanel extends JPanel implements ActionListener, MouseListener{
+class nuevoPanel extends JPanel implements ActionListener{
     private int x;
     private int y;
+    private int secuencia=0;
+    private int sec=0;
     private Timer timer;
     public nuevoPanel(){
         
-        timer=new Timer(25, this);
+        timer=new Timer(50, this);
         timer.start();
     }
     protected void paintComponent(Graphics g){
         super.paintComponent(g);
-        g.drawRect(10+x, 370, 100, 60);
-        g.fillOval(25+x, 430, 22, 22);
-        g.fillOval(75+x, 430, 22, 22);
-        g.fillRect(110+x, 380, 60, 15);
-        g.drawRect(7+x, 367 ,165 ,88);
+        Image fondo = loadImage("fondo.png");
+        g.drawImage(fondo, 0, 0, null);
         
-        g.drawRect(220+x, 370, 100, 60);
-        g.drawOval(235+x, 430, 22, 22);
-        g.drawOval(285+x, 430, 22, 22);
-        g.drawRect(320+x, 380, 60, 15);
-        g.drawRect(217+x, 367 ,165 ,88);
+        Image moneda = loadImage("FullCoins.png");
+        g.drawImage(moneda, 500, 360, 532,392,(this.secuencia*16),0,(this.secuencia*16)+16,16,this);
         
-        g.drawRect(120,100+y,30,80);
-        g.drawRect(190,110+y,30,80);
-        g.drawOval(350, 150+y, 30, 30);
-        g.drawOval(300, 180+y, 30, 30);
-        
-        g.drawRect(440,415,40,40);
+        Image muñeco=loadImage("free_radical_game_sprites.png");
+        g.drawImage(muñeco, 100+x, 350, 164+x,414,192+(this.sec*32),192,192+(this.sec*32)+32,192+32,this);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        x+=1;
-        y+=1;
+        x+=3;
+        if(this.secuencia==5){
+            this.secuencia=0;
+        }else{
+            this.secuencia++;
+        }
+        if(this.sec==2){
+            this.sec=0;
+        }else{
+            this.sec++;
+        }
+        //colisiones();
         repaint();
     }
     public Rectangle getBounds(){
-        return new Rectangle(7, 367 ,165 ,88);
+        return new Rectangle(20+x, 380, 95,50);
     }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        Point mp=e.getPoint();
-        if(getBounds().contains(mp)){
-            this.timer.stop();
+    /**public void colisiones(){
+        Rectangle rc=getBounds();
+        Rectangle a=new Rectangle(300,360,50,50);
+        if(rc.intersects(a)){
+            System.out.println("colision");
+            timer.stop();
         }
     }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-        
+    */public Image loadImage(String nombre){
+        ImageIcon ii=new ImageIcon(nombre);
+        Image image=ii.getImage();
+        return image;
     }
 
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-        
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-        
-    }
 }
